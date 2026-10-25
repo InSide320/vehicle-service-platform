@@ -1,0 +1,20 @@
+{
+	"name": "vehicle-service-platform",
+	"version": "1.0.0",
+	"description": "",
+	"main": "dist/index.js",
+	"scripts": {
+		"run": "node src/index.ts",
+		"build": "tsc"
+	},
+	"private": true,
+	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"eslint": "^9.39.5",
+		"eslint-plugin-react": "^7.37.5",
+		"globals": "^17.13.0",
+		"prettier": "^3.9.10",
+		"typescript": "^6.0.3",
+		"typescript-eslint": "^8.72.0"
+	}
+}
