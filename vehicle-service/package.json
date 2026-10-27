@@ -1,34 +1,36 @@
 {
-  "name": "vehicle-service",
-  "version": "1.0.0",
-  "description": "Vehicle service for the vehicle service platform",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "prisma skills sync || exit 0"
-  },
-  "private": true,
-  "dependencies": {
-    "@nestjs/common": "^12.2.0",
-    "@nestjs/config": "^12.0.1",
-    "@nestjs/core": "^12.2.0",
-    "@nestjs/platform-express": "^12.2.0",
-    "@prisma/client": "^7.10.1",
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.15.1",
-    "pg": "^8.23.1",
-    "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.2"
-  },
-  "devDependencies": {
-    "@nestjs/cli": "^12.0.10",
-    "@nestjs/schematics": "^12.0.10",
-    "@nestjs/testing": "^12.2.0",
-    "@types/node": "^26.6.5",
-    "dotenv": "^18.0.9",
-    "prisma": "^7.10.1",
-    "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
-    "tsx": "^4.23.15"
-  }
+	"name": "vehicle-service",
+	"version": "1.0.0",
+	"description": "Vehicle service for the vehicle service platform",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"postinstall": "prisma skills sync || exit 0"
+	},
+	"private": true,
+	"dependencies": {
+		"@nestjs/common": "^12.2.0",
+		"@nestjs/config": "^12.0.1",
+		"@nestjs/core": "^12.2.0",
+		"@nestjs/platform-express": "^12.2.0",
+		"@prisma/client": "^7.10.1",
+		"class-transformer": "^0.5.1",
+		"class-validator": "^0.15.1",
+		"pg": "^8.23.1",
+		"reflect-metadata": "^0.2.2",
+		"rxjs": "^7.8.2"
+	},
+	"devDependencies": {
+		"@nestjs/cli": "^12.0.10",
+		"@nestjs/schematics": "^12.0.10",
+		"@nestjs/testing": "^12.2.0",
+		"@types/express": "^5.0.6",
+		"@types/node": "^26.6.5",
+		"dotenv": "^18.0.9",
+		"prisma": "^7.10.1",
+		"ts-node": "^10.9.2",
+		"tsconfig-paths": "^4.2.0",
+		"tsx": "^4.23.15"
+	}
 }

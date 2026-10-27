@@ -3,6 +3,7 @@
     "target": "es2022",
     "module": "node16",
     "esModuleInterop": true,
+		"types": ["node"],
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": true,
