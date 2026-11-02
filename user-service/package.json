@@ -5,7 +5,8 @@
 	"main": "index.js",
 	"type": "module",
 	"scripts": {
-		"start:dev": "tsx watch main.ts",
+		"start": "nest start",
+		"start:dev": "nest start --watch",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"private": true,
@@ -13,7 +14,9 @@
 		"@nestjs/common": "^12.2.0",
 		"@nestjs/config": "^12.0.1",
 		"@nestjs/core": "^12.2.0",
+		"@nestjs/mapped-types": "*",
 		"@nestjs/platform-express": "^12.2.0",
+		"@prisma/adapter-pg": "^7.10.1",
 		"@prisma/client": "^7.10.1",
 		"class-transformer": "^0.5.1",
 		"class-validator": "^0.15.1",
@@ -27,6 +30,7 @@
 		"@nestjs/testing": "^12.2.0",
 		"@types/express": "^5.0.6",
 		"@types/node": "^26.6.5",
+		"dotenv": "^18.0.9",
 		"prisma": "^7.10.1",
 		"ts-node": "^10.9.2",
 		"tsconfig-paths": "^4.2.0",
