@@ -7,7 +7,10 @@
 	"scripts": {
 		"start": "nest start",
 		"start:dev": "nest start --watch",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"migrate:dev": "prisma migrate dev",
+		"migrate:prod": "prisma migrate deploy",
+		"generate": "prisma generate",
 	},
 	"private": true,
 	"dependencies": {
