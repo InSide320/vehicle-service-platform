@@ -7,8 +7,12 @@
 		"types": ["node"],
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
+		"strictNullChecks": true,
+		"noImplicitAny": true,
+		"strictFunctionTypes": true,
+		"strictPropertyInitialization": true,
 		"skipLibCheck": true,
 		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
+		"emitDecoratorMetadata": true
 	}
 }
