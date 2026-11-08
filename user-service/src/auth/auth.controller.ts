@@ -1,4 +1,8 @@
-import { Public, SignInService } from "@nestjs/authentication";
+import {
+	EmailVerificationService,
+	Public,
+	SignInService,
+} from "@nestjs/authentication";
 import {
 	Body,
 	Controller,
@@ -15,7 +19,8 @@ import { signInSchema, signUpSchema } from "./auth.schemas.js";
 export class AuthController {
 	constructor(
 		private readonly credentialsService: CredentialsService,
-		private readonly signInService: SignInService
+		private readonly signInService: SignInService,
+		private readonly emailVerificationService: EmailVerificationService
 	) {}
 	@Post("sign-up")
 	async signUp(@Body({ schema: signUpSchema }) body: SignUpDto) {
@@ -24,6 +29,7 @@ export class AuthController {
 			body.password
 		);
 		await this.signInService.signIn(user.id, { method: "password" });
+		await this.emailVerificationService.send(user);
 		return user;
 	}
 

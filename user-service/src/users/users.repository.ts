@@ -89,4 +89,14 @@ export class UsersRepository {
 			.findMany()
 			.then((users) => users.find((user) => user.email === normalized));
 	}
+
+	async markEmailVerifies(id: string, email: string) {
+		const user = await this.prisma.user.findUnique({ where: { id } });
+		if (user?.email !== normalize(email)) {
+			return false;
+		}
+		user.emailVerified = true;
+		await this.prisma.user.update({ where: { id }, data: user });
+		return true;
+	}
 }
