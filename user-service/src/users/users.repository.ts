@@ -6,10 +6,6 @@ import { normalize, toUser } from "./utils/users.utils.js";
 import { Role } from "../generated/prisma/enums.js";
 import { CreateUserHashDto } from "./dto/create-user.dto.js";
 
-/**
- * In-memory stand-in for your data layer (Prisma, Drizzle, TypeORM, ...).
- * Only `User` objects leave this class: password hashes stay inside.
- */
 @Injectable()
 export class UsersRepository {
 	constructor(private readonly prisma: PrismaService) {}
