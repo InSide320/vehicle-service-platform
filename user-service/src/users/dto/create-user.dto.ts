@@ -1,15 +1,32 @@
-import { Length } from "class-validator";
+import {
+	IsEmail,
+	IsNotEmpty,
+	IsString,
+	MaxLength,
+	MinLength,
+} from "class-validator";
 
 export class CreateUserDto {
-	@Length(2, 50)
-	name!: string;
-
-	@Length(2, 100)
+	@IsEmail()
+	@IsNotEmpty({ message: "Must not be empty" })
+	@MinLength(4, { message: "Must be at least 4 characters long" })
 	email!: string;
 
-	@Length(6, 100)
+	@IsString({ message: "Must be a string" })
+	@MinLength(12)
+	@MaxLength(128)
 	password!: string;
+}
 
-	createdAt?: Date;
 
+export class CreateUserHashDto {
+	@IsEmail()
+	@IsNotEmpty({ message: "Must not be empty" })
+	@MinLength(4, { message: "Must be at least 4 characters long" })
+	email!: string;
+
+	@IsString({ message: "Must be a string" })
+	@MinLength(12)
+	@MaxLength(128)
+	passwordHash!: string;
 }

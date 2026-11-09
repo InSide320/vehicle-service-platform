@@ -7,13 +7,18 @@
 	"scripts": {
 		"start": "nest start",
 		"start:dev": "nest start --watch",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"migrate:dev": "prisma migrate dev",
+		"migrate:prod": "prisma migrate deploy",
+		"generate": "prisma generate"
 	},
 	"private": true,
 	"dependencies": {
+		"@nestjs/authentication": "^0.1.2",
 		"@nestjs/common": "^12.2.0",
 		"@nestjs/config": "^12.0.1",
 		"@nestjs/core": "^12.2.0",
+		"@nestjs/mail": "^0.0.2",
 		"@nestjs/mapped-types": "*",
 		"@nestjs/platform-express": "^12.2.0",
 		"@prisma/adapter-pg": "^7.10.1",
@@ -22,7 +27,8 @@
 		"class-validator": "^0.15.1",
 		"pg": "^8.23.1",
 		"reflect-metadata": "^0.2.2",
-		"rxjs": "^7.8.2"
+		"rxjs": "^7.8.2",
+		"zod": "^4.6.7"
 	},
 	"devDependencies": {
 		"@nestjs/cli": "^12.0.10",

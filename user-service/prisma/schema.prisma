@@ -5,9 +5,36 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
 }
+
+enum Role {
+  guest
+  user
+  admin
+}
+
+model User {
+  id            String    @id @default(uuid(7)) @db.Uuid
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  role          Role      @default(guest)
+  passwordHash  String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime? @updatedAt
+}
+
+// model Vehicle {
+//   id        Int       @id @default(autoincrement())
+//   make      String    @default("Unknown")
+//   model     String    @default("Unknown")
+//   year      Int?
+//   userId    Int
+//   user      User      @relation(fields: [userId], references: [id])
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime? @updatedAt
+// }
