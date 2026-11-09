@@ -12,22 +12,29 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  name      String?
-  vehicles  Vehicle[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+enum Role {
+  guest
+  user
+  admin
 }
 
-model Vehicle {
-  id        Int       @id @default(autoincrement())
-  make      String    @default("Unknown")
-  model     String    @default("Unknown")
-  year      Int?
-  userId    Int
-  user      User      @relation(fields: [userId], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+model User {
+  id            String    @id @default(uuid(7)) @db.Uuid
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  role          Role      @default(guest)
+  passwordHash  String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime? @updatedAt
 }
+
+// model Vehicle {
+//   id        Int       @id @default(autoincrement())
+//   make      String    @default("Unknown")
+//   model     String    @default("Unknown")
+//   year      Int?
+//   userId    Int
+//   user      User      @relation(fields: [userId], references: [id])
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime? @updatedAt
+// }
