@@ -1,4 +1,4 @@
-import { User, UserRow } from "../user.js";
+import { User, UserRow } from "../../users/user.js";
 
 // As the package passes addresses to handlers: an accent typed as two code points matches the stored one.
 export const normalize = (email: string) =>

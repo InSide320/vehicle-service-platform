@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { Injectable } from "@nestjs/common";
 import type { User } from "./user.js";
 import { PrismaService } from "../prisma/index.js";
-import { normalize, toUser } from "./utils/users.utils.js";
+import { normalize, toUser } from "../common/utils/users.utils.js";
 import { Role } from "../generated/prisma/enums.js";
 import { CreateUserHashDto } from "./dto/create-user.dto.js";
 
