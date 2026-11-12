@@ -9,5 +9,6 @@ node_modules
 prisma/migrations/*
 
 dist
+./src/temp
 
 *.spec.ts

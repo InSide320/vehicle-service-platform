@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { LoggerMiddleware } from "./middleware/logger.middleware.js";
+import { VehiclesModule } from './vehicles/vehicles.module.js';
 
 @Module({
 	imports: [
@@ -8,12 +8,13 @@ import { LoggerMiddleware } from "./middleware/logger.middleware.js";
 			isGlobal: true,
 			envFilePath: [".env"],
 		}),
+		VehiclesModule,
 	],
 	controllers: [],
 	providers: [],
 })
 export class AppModule implements NestModule {
 	configure(consumer: MiddlewareConsumer) {
-		consumer.apply(LoggerMiddleware).forRoutes("*");
+		// consumer.apply(LoggerMiddleware).forRoutes("*");
 	}
 }

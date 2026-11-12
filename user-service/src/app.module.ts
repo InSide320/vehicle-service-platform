@@ -35,7 +35,7 @@ import { join } from "node:path";
 					absoluteTtl: "14d", // signed out after 14 days, however active
 					idleTtl: "3d", // 3 days without a request
 				},
-				emailVerification: { url: `${process.env.APP_URL}/verify-email` },
+				emailVerification: { url: `${process.env.APP_URL}/auth/email/verify` },
 			}),
 		}),
 		PrismaModule,
