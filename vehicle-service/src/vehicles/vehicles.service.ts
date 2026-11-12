@@ -1,26 +1,54 @@
-import { Injectable } from '@nestjs/common';
-import { CreateVehicleDto } from './dto/create-vehicle.dto.js';
-import { UpdateVehicleDto } from './dto/update-vehicle.dto.js';
+import { Injectable } from "@nestjs/common";
+import { CreateVehicleDto } from "./dto/create-vehicle.dto.js";
+import { UpdateVehicleDto } from "./dto/update-vehicle.dto.js";
+import { PrismaService } from "../prisma/index.js";
 
 @Injectable()
 export class VehiclesService {
-  create(createVehicleDto: CreateVehicleDto) {
-    return 'This action adds a new vehicle';
-  }
+	constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    return `This action returns all vehicles`;
-  }
+	create(createVehicleDto: CreateVehicleDto) {
+		return "This action adds a new vehicle";
+	}
 
-  findOne(id: number) {
-    return `This action returns a #${id} vehicle`;
-  }
+	findAll() {
+		return `This action returns all vehicles`;
+	}
 
-  update(id: number, updateVehicleDto: UpdateVehicleDto) {
-    return `This action updates a #${id} vehicle`;
-  }
+	findOne(id: string) {
+		return `This action returns a #${id} vehicle`;
+	}
 
-  remove(id: number) {
-    return `This action removes a #${id} vehicle`;
-  }
+	update(id: string, updateVehicleDto: UpdateVehicleDto) {
+		return `This action updates a #${id} vehicle`;
+	}
+
+	remove(id: string) {
+		return `This action removes a #${id} vehicle`;
+	}
+
+	async createForNewUser(userId: string) {
+		const existingVehicle = await this.prisma.vehicle.findFirst({
+			where: {
+				userId,
+			},
+		});
+
+		if (existingVehicle) {
+			return existingVehicle;
+		}
+		return this.prisma.vehicle.create({
+			data: {
+				userId,
+			},
+		});
+	}
+
+	async findAllForUser(userId: string) {
+		return await this.prisma.vehicle.findMany({
+			where: {
+				userId,
+			},
+		});
+	}
 }
