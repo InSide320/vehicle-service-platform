@@ -5,7 +5,12 @@
 	"main": "index.js",
 	"type": "module",
 	"scripts": {
+		"start": "nest start",
+		"start:dev": "nest start --watch",
 		"test": "echo \"Error: no test specified\" && exit 1",
+		"migrate:dev": "prisma migrate dev",
+		"migrate:prod": "prisma migrate deploy",
+		"generate": "prisma generate",
 		"postinstall": "prisma skills sync || exit 0"
 	},
 	"private": true,
@@ -13,6 +18,8 @@
 		"@nestjs/common": "^12.2.0",
 		"@nestjs/config": "^12.0.1",
 		"@nestjs/core": "^12.2.0",
+		"@nestjs/mapped-types": "*",
+		"@nestjs/microservices": "^12.4.2",
 		"@nestjs/platform-express": "^12.2.0",
 		"@prisma/client": "^7.10.1",
 		"class-transformer": "^0.5.1",
