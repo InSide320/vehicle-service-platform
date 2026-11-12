@@ -5,9 +5,21 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model Vehicle {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  make      String    @default("Unknown")
+  model     String    @default("Unknown")
+  year      Int?
+  userId    String    @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  @@index([userId])
 }
