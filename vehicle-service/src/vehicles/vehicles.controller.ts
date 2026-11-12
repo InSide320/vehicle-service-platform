@@ -1,35 +1,63 @@
-import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { VehiclesService } from './vehicles.service.js';
-import { CreateVehicleDto } from './dto/create-vehicle.dto.js';
-import { UpdateVehicleDto } from './dto/update-vehicle.dto.js';
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	ParseUUIDPipe,
+	Patch,
+	Post,
+} from "@nestjs/common";
+import { VehiclesService } from "./vehicles.service.js";
+import { CreateVehicleDto } from "./dto/create-vehicle.dto.js";
+import { UpdateVehicleDto } from "./dto/update-vehicle.dto.js";
+import { EventPattern, MessagePattern, Payload } from "@nestjs/microservices";
 
-@Controller()
+@Controller("vehicles")
 export class VehiclesController {
-  constructor(private readonly vehiclesService: VehiclesService) {}
+	constructor(private readonly vehiclesService: VehiclesService) {}
 
-  @MessagePattern('createVehicle')
-  create(@Payload() createVehicleDto: CreateVehicleDto) {
-    return this.vehiclesService.create(createVehicleDto);
-  }
+	@Post()
+	create(@Body() createVehicleDto: CreateVehicleDto) {
+		return this.vehiclesService.create(createVehicleDto);
+	}
 
-  @MessagePattern('findAllVehicles')
-  findAll() {
-    return this.vehiclesService.findAll();
-  }
+	@EventPattern("USER_CREATED")
+	handleUserCreatedEvent(
+		@Payload()
+		event: {
+			type: "USER_CREATED";
+			data: { id: string; email: string };
+		}
+	) {
+		return this.vehiclesService.createForNewUser(event.data.id);
+	}
 
-  @MessagePattern('findOneVehicle')
-  findOne(@Payload() id: number) {
-    return this.vehiclesService.findOne(id);
-  }
+	@Get()
+	findAll() {
+		return this.vehiclesService.findAll();
+	}
 
-  @MessagePattern('updateVehicle')
-  update(@Payload() updateVehicleDto: UpdateVehicleDto) {
-    return this.vehiclesService.update(updateVehicleDto.id, updateVehicleDto);
-  }
+	@MessagePattern("get_vehicles")
+	getVehiclesByUser(data: {userId: string}) {
+		return this.vehiclesService.findAllForUser(data.userId);
+	}
 
-  @MessagePattern('removeVehicle')
-  remove(@Payload() id: number) {
-    return this.vehiclesService.remove(id);
-  }
+	@Get(":id")
+	findOne(@Param("id", new ParseUUIDPipe({ version: "all" })) id: string) {
+		return this.vehiclesService.findOne(id);
+	}
+
+	@Patch(":id")
+	update(
+		@Param("id", new ParseUUIDPipe({ version: "all" })) id: string,
+		@Body() updateVehicleDto: UpdateVehicleDto
+	) {
+		return this.vehiclesService.update(id, updateVehicleDto);
+	}
+
+	@Delete(":id")
+	remove(@Param("id", new ParseUUIDPipe({ version: "all" })) id: string) {
+		return this.vehiclesService.remove(id);
+	}
 }

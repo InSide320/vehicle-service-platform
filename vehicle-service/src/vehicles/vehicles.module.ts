@@ -1,9 +1,16 @@
-import { Module } from '@nestjs/common';
-import { VehiclesService } from './vehicles.service.js';
-import { VehiclesController } from './vehicles.controller.js';
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { VehiclesService } from "./vehicles.service.js";
+import { VehiclesController } from "./vehicles.controller.js";
+import { VehiclesMiddleware } from "./vehicles.middleware.js";
+import { PrismaModule } from "../prisma/index.js";
 
 @Module({
-  controllers: [VehiclesController],
-  providers: [VehiclesService],
+	imports: [PrismaModule],
+	controllers: [VehiclesController],
+	providers: [VehiclesService],
 })
-export class VehiclesModule {}
+export class VehiclesModule implements NestModule {
+	configure(consumer: MiddlewareConsumer) {
+		consumer.apply(VehiclesMiddleware).forRoutes("*");
+	}
+}
