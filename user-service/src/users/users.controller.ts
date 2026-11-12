@@ -1,14 +1,4 @@
-import {
-	Body,
-	Controller,
-	Delete,
-	Get,
-	Param,
-	Patch,
-	Post,
-} from "@nestjs/common";
-import { User } from "./user.js";
-import { CreateUserDto } from "./dto/create-user.dto.js";
+import { Body, Controller, Delete, Get, Param, Patch } from "@nestjs/common";
 import { UsersService } from "./users.service.js";
 import { UpdateUserEmailDto } from "./dto/update-user-email.dto.js";
 import { UpdateUserPasswordDto } from "./dto/update-user-password.dto.js";
@@ -16,11 +6,6 @@ import { UpdateUserPasswordDto } from "./dto/update-user-password.dto.js";
 @Controller("users")
 export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
-
-	@Post()
-	create(@Body() createUserDto: CreateUserDto): Promise<User> {
-		return this.usersService.create(createUserDto);
-	}
 
 	@Get()
 	findAll() {
@@ -38,8 +23,13 @@ export class UsersController {
 	}
 
 	@Patch(":id/password")
-	updatePass(@Param("id") id: string, @Body() dto: UpdateUserPasswordDto) {
+	updatePassword(@Param("id") id: string, @Body() dto: UpdateUserPasswordDto) {
 		return this.usersService.updatePassword(id, dto);
+	}
+
+	@Get(":id/vehicles")
+	async getVehicles(@Param("id") id: string) {
+		return await this.usersService.getVehicles(id);
 	}
 
 	@Delete(":id")

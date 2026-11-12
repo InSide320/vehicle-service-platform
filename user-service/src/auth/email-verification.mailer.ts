@@ -31,6 +31,7 @@ export class EmailVerificationMailer extends EmailVerificationHandler {
 		registry.registerHandler("emailVerification", this);
 	}
 	async send(link: EmailVerificationLink) {
+		console.log(`Sending email verification to ${link.email} with link: ${link.url}`);
 		await this.mailer.send(VerifyEmailMail, { to: link.email, data: link });
 	}
 

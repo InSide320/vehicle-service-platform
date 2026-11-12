@@ -1,12 +1,23 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+	BadRequestException,
+	Inject,
+	Injectable,
+	NotFoundException,
+} from "@nestjs/common";
 import { isUUID } from "class-validator";
-import { CreateUserDto, CreateUserHashDto } from "./dto/create-user.dto.js";
 import { UsersRepository } from "./users.repository.js";
 import { UpdateUserPasswordDto } from "./dto/update-user-password.dto.js";
+import { CreateUserDto, CreateUserHashDto } from "./dto/create-user.dto.js";
+import { ClientProxy } from "@nestjs/microservices";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class UsersService {
-	constructor(private readonly userRepository: UsersRepository) {}
+	constructor(
+		private readonly userRepository: UsersRepository,
+		@Inject("VEHICLE_SERVICE")
+		private readonly vehicleServiceClient: ClientProxy
+	) {}
 
 	async create(dto: CreateUserDto) {
 		const dtoHash: CreateUserHashDto = {
@@ -18,6 +29,12 @@ export class UsersService {
 
 	async findAll() {
 		return await this.userRepository.findAll();
+	}
+
+	async getVehicles(userId: string) {
+		return await firstValueFrom(
+			this.vehicleServiceClient.send("get_vehicles", { userId })
+		);
 	}
 
 	async findOne(id: string) {
