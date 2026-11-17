@@ -11,6 +11,34 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { createClient } from "redis";
 
+const TOUCH_SESSION_SCRIPT = `
+local data = redis.call("GET", KEYS[1])
+if not data then 
+	return 0
+end
+
+local record = cjson.decode(data)
+local current = tonumber(string.match(record.lastActiveAt, "^(%d+)"))
+local next = tonumber(ARGV[1])
+if current and current >= next then
+	return 0
+end
+
+record.lastActiveAt = ARGV[2]
+redis.call("SET", KEYS[1], cjson.encode(record), "XX", "KEEPTTL")
+return 1
+`;
+
+const DELETE_USER_SESSIONS_SCRIPT = `
+local indexKey = KEYS[1]
+local ids = redis.call("ZRANGE", indexKey, 0, -1)
+for _, id in ipairs(ids) do
+	redis.call("DEL", ARGV[1] .. id)
+end
+redis.call("DEL", indexKey)
+return #ids
+`;
+
 @Injectable()
 export class RedisSessionStore
 	implements SessionStore, OnModuleInit, OnApplicationShutdown
@@ -40,9 +68,6 @@ export class RedisSessionStore
 			return undefined;
 		}
 
-		console.log(`Retrieved session from Redis: ${value}`);
-		console.log(`JSON.stringify(value): ${JSON.stringify(value)}`);
-
 		const record = JSON.parse(value) as Omit<
 			SessionRecord,
 			"createdAt" | "expiresAt" | "lastActiveAt"
@@ -51,8 +76,6 @@ export class RedisSessionStore
 			expiresAt: Date;
 			lastActiveAt: Date;
 		};
-
-		console.log(`Parsed session record: ${JSON.stringify(record)}`);
 
 		return {
 			...record,
@@ -63,27 +86,84 @@ export class RedisSessionStore
 	}
 
 	async createSession(record: SessionRecord): Promise<void> {
-		await this.client.set(this.sessionKey(record.id), JSON.stringify(record));
-	}
-	async touchSession(id: string, lastActiveAt: Date): Promise<void> {
-		const session = await this.getSession(id);
-		if (session) {
-			session.lastActiveAt = lastActiveAt;
-			await this.createSession(session);
+		const ttl = record.expiresAt.getTime() - Date.now();
+		if (ttl <= 0) {
+			throw new RangeError("Cannot store an already expired session");
 		}
+
+		const { extra: _extra, ...persistedRecord } = record;
+
+		const data = JSON.stringify(persistedRecord);
+
+		await this.client
+			.multi()
+			.set(this.sessionKey(record.id), data, { PX: ttl })
+			.zAdd(this.userIndexKey(record.userId), {
+				score: record.expiresAt.getTime(),
+				value: record.id,
+			})
+			.exec();
+	}
+
+	async touchSession(id: string, lastActiveAt: Date): Promise<void> {
+		await this.client.eval(TOUCH_SESSION_SCRIPT, {
+			keys: [this.sessionKey(id)],
+			arguments: [String(lastActiveAt.getTime()), lastActiveAt.toISOString()],
+		});
 	}
 	async deleteSession(id: string): Promise<boolean> {
-		const result = await this.client.del(this.sessionKey(id));
-		return result > 0;
+		const deleted = await this.client.eval(
+			`
+			local data = redis.call("GET", KEYS[1])
+			if not data then 
+				return 0
+			end
+			local record = cjson.decode(data)
+			redis.call("DEL", KEYS[1])
+			redis.call("ZREM", ARGV[1] .. record.userId, record.id)
+			return 1
+			`,
+			{
+				keys: [this.sessionKey(id)],
+				arguments: [this.userIndexPrefix],
+			}
+		);
+		return Number(deleted) === 1;
 	}
-	listUserSessions(userId: string): Promise<SessionRecord[]> {
-		throw new Error("Method not implemented.");
+	async listUserSessions(userId: string): Promise<SessionRecord[]> {
+		const indexKey = this.userIndexKey(userId);
+		const ids = await this.client.zRange(indexKey, 0, -1);
+		const sessions = await Promise.all(ids.map((id) => this.getSession(id)));
+		const records: SessionRecord[] = [];
+		const staleIds: string[] = [];
+
+		for (let i = 0; i < ids.length; i++) {
+			const record = sessions[i];
+			if (record) {
+				records.push(record);
+			} else {
+				staleIds.push(ids[i]);
+			}
+		}
+
+		if (staleIds.length > 0) {
+			await this.client.zRem(indexKey, staleIds);
+		}
+
+		return records;
 	}
-	deleteUserSessions(userId: string): Promise<void> {
-		throw new Error("Method not implemented.");
+	async deleteUserSessions(userId: string): Promise<void> {
+		await this.client.eval(DELETE_USER_SESSIONS_SCRIPT, {
+			keys: [this.userIndexKey(userId)],
+			arguments: [this.keyPrefix],
+		});
 	}
 
 	private sessionKey(id: string): string {
-		return `${this.keyPrefix}:${id}`;
+		return `${this.keyPrefix}${id}`;
+	}
+
+	private userIndexKey(userId: string): string {
+		return `${this.userIndexPrefix}${userId}`;
 	}
 }
