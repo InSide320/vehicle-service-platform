@@ -48,4 +48,11 @@ export class AuthController {
 		});
 		return { mfaRequired: session.mfa === "pending" };
 	}
+
+	@Post("sign-out")
+	@HttpCode(200)
+	async signOut() {
+		await this.signInService.signOut();
+		return { ok: true };
+	}
 }
