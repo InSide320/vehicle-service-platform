@@ -7,6 +7,7 @@ import { EmailVerificationMailer } from "./email-verification.mailer.js";
 import { EmailVerificationController } from "./email-verification.controller.js";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { ConfigService } from "@nestjs/config";
+import { RedisSessionStore } from "../redis/redis-session.store.js";
 
 @Module({
 	imports: [
@@ -32,6 +33,6 @@ import { ConfigService } from "@nestjs/config";
 		]),
 	],
 	controllers: [AuthController, EmailVerificationController],
-	providers: [SessionAuth, CredentialsService, EmailVerificationMailer],
+	providers: [RedisSessionStore, SessionAuth, CredentialsService, EmailVerificationMailer],
 })
 export class AuthModule {}
