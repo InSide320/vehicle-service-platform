@@ -1,26 +1,12 @@
-import {
-	Body,
-	Controller,
-	Delete,
-	Get,
-	Param,
-	ParseUUIDPipe,
-	Patch,
-	Post,
-} from "@nestjs/common";
+import { Controller } from "@nestjs/common";
 import { VehiclesService } from "./vehicles.service.js";
+import { EventPattern, MessagePattern, Payload } from "@nestjs/microservices";
 import { CreateVehicleDto } from "./dto/create-vehicle.dto.js";
 import { UpdateVehicleDto } from "./dto/update-vehicle.dto.js";
-import { EventPattern, MessagePattern, Payload } from "@nestjs/microservices";
 
 @Controller("vehicles")
 export class VehiclesController {
 	constructor(private readonly vehiclesService: VehiclesService) {}
-
-	@Post()
-	create(@Body() createVehicleDto: CreateVehicleDto) {
-		return this.vehiclesService.create(createVehicleDto);
-	}
 
 	@EventPattern("USER_CREATED")
 	handleUserCreatedEvent(
@@ -30,34 +16,31 @@ export class VehiclesController {
 			data: { id: string; email: string };
 		}
 	) {
-		return this.vehiclesService.createForNewUser(event.data.id);
-	}
-
-	@Get()
-	findAll() {
-		return this.vehiclesService.findAll();
+		return this.vehiclesService.createVehicleForNewUser(event.data.id);
 	}
 
 	@MessagePattern("get_vehicles")
-	getVehiclesByUser(data: {userId: string}) {
-		return this.vehiclesService.findAllForUser(data.userId);
+	getVehiclesByUser(data: { userId: string }) {
+		return this.vehiclesService.findVehiclesByUser(data.userId);
 	}
 
-	@Get(":id")
-	findOne(@Param("id", new ParseUUIDPipe({ version: "all" })) id: string) {
-		return this.vehiclesService.findOne(id);
+	@MessagePattern("get_vehicle_by_id")
+	getVehicleByUser(data: { id: string; userId: string }) {
+		return this.vehiclesService.findVehicleByUser(data.id, data.userId);
 	}
 
-	@Patch(":id")
-	update(
-		@Param("id", new ParseUUIDPipe({ version: "all" })) id: string,
-		@Body() updateVehicleDto: UpdateVehicleDto
-	) {
-		return this.vehiclesService.update(id, updateVehicleDto);
+	@MessagePattern("create_vehicle")
+	createVehicle(vehicleData: CreateVehicleDto) {
+		return this.vehiclesService.create(vehicleData);
 	}
 
-	@Delete(":id")
-	remove(@Param("id", new ParseUUIDPipe({ version: "all" })) id: string) {
-		return this.vehiclesService.remove(id);
+	@MessagePattern("update_vehicle")
+	updateVehicle(data: { id: string; userId: string; data: UpdateVehicleDto }) {
+		return this.vehiclesService.updateForUser(data.id, data.userId, data.data);
+	}
+
+	@MessagePattern("delete_vehicle")
+	deleteVehicle(data: { id: string; userId: string }) {
+		return this.vehiclesService.removeForUser(data.id, data.userId);
 	}
 }
