@@ -1,10 +1,21 @@
-import ReactDom from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-import React from "react";
+import React, { StrictMode } from "react";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { vehicleServicePlatform } from "./theme/vehicleServicePlatform";
 
-ReactDom.createRoot(document.getElementById("root")!).render(
-	<BrowserRouter>
-		<App />
-	</BrowserRouter>
+createRoot(document.getElementById("root")!).render(
+	<StrictMode>
+		<BrowserRouter>
+			<ThemeProvider theme={vehicleServicePlatform}>
+				<CssBaseline />
+				<App />
+			</ThemeProvider>
+		</BrowserRouter>
+	</StrictMode>
 );

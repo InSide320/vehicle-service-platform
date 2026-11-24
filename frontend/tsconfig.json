@@ -3,7 +3,13 @@
 	"compilerOptions": {
 		"rootDir": "./src",
 		"outDir": "./dist",
-		"jsx": "react"
+		"jsx": "react",
+		"types": ["node", "vite/client"],
+		"lib": ["es6", "dom"],
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"strictNullChecks": true,
+		"allowSyntheticDefaultImports": true
 	},
 	"include": ["src/**/*.tsx"],
 	"exclude": ["node_modules", "dist", "test"]

@@ -8,10 +8,20 @@
 		"dev": "vite --host 0.0.0.0"
 	},
 	"private": true,
+	"peerDependencies": {
+		"react": "^17.0.0 || ^18.0.0 || ^19.0.0",
+		"react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
+	},
 	"dependencies": {
+		"@emotion/react": "^11.14.0",
+		"@emotion/styled": "^11.14.1",
+		"@fontsource/roboto": "^5.3.0",
+		"@mui/icons-material": "^9.5.0",
+		"@mui/material": "^9.5.0",
 		"axios": "^1.21.1",
-		"react": "^19.3.1",
-		"react-dom": "^19.3.1",
+		"react": "^17.0.0 || ^18.0.0 || ^19.0.0",
+		"react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0",
+		"react-is": "^19.3.1",
 		"react-router-dom": "^7.18.5"
 	},
 	"devDependencies": {
@@ -20,5 +30,8 @@
 		"@vitejs/plugin-react": "^6.3.0",
 		"typescript": "^7.0.2",
 		"vite": "^8.3.8"
+	},
+	"overrides": {
+		"react-is": "^19.3.1"
 	}
 }
