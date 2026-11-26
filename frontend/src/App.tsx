@@ -6,6 +6,7 @@ import { VehiclesPage } from "./pages/vehicles/VehiclesPage";
 import { NewUserPage } from "./pages/users/NewUserPage";
 import { GuestOnlyRoute } from "./pages/auth/GuestOnlyRoute";
 import { RequireAuthRoute } from "./pages/auth/RequireAuthRoute";
+import { NotFoundPage } from "./pages/NotFoundPage";
 
 export default function App() {
 	return (
@@ -45,17 +46,12 @@ export default function App() {
 						path="vehicles/new"
 						element={null}
 					/>
+					<Route
+						path="*"
+						element={<NotFoundPage />}
+					/>
 				</Route>
 			</Route>
-			<Route
-				path="*"
-				element={
-					<Navigate
-						to="/users"
-						replace
-					/>
-				}
-			/>
 		</Routes>
 	);
 }
