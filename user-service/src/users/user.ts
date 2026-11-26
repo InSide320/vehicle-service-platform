@@ -1,4 +1,4 @@
-export type Role = "guest"| "user" | "admin";
+export type Role = "guest" | "user" | "admin";
 
 export interface User {
 	id: string;
@@ -6,7 +6,6 @@ export interface User {
 	emailVerified: boolean;
 	role: Role;
 }
-
 
 export interface UserRow extends User {
 	passwordHash: string;

@@ -43,10 +43,10 @@ export class AuthController {
 		if (!user) {
 			throw new UnauthorizedException("Invalid credentials");
 		}
-		const { session } = await this.signInService.signIn(user.id, {
+		await this.signInService.signIn(user.id, {
 			method: "password",
 		});
-		return { mfaRequired: session.mfa === "pending" };
+		return { ok: true };
 	}
 
 	@Post("sign-out")

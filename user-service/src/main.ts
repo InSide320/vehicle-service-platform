@@ -9,6 +9,10 @@ async function bootstrap() {
 	});
 	app.enableShutdownHooks();
 	app.useSecurityHeaders();
+	app.enableCors({
+		origin: ["http://localhost:3000"],
+		credentials: true,
+	});
 	app.useGlobalPipes(new ValidationPipe());
 	const config = app.get(ConfigService);
 	const port = config.get<string>("PORT") || 3000;

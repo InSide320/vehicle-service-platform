@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
 	Avatar,
+	Alert,
 	Box,
 	Button,
 	Card,
@@ -33,8 +34,10 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
-import { Link as RouterLink, useLocation } from "react-router-dom";
-import { initialUsers, UserRecord, UserStatus } from "./usersData";
+import { Link as RouterLink } from "react-router-dom";
+import { getUsers } from "../../api";
+import { User } from "../../types/users";
+import { UserRecord, UserStatus } from "./usersData";
 
 const PAGE_SIZE = 5;
 
@@ -86,11 +89,25 @@ function statusColor(status: UserStatus): "success" | "warning" | "error" {
 }
 
 export function UsersPage() {
-	const location = useLocation();
-	const newUser = (location.state as { newUser?: UserRecord } | null)?.newUser;
-	const [users, setUsers] = useState<UserRecord[]>(() =>
-		newUser ? [newUser, ...initialUsers] : initialUsers
-	);
+	const [users, setUsers] = useState<UserRecord[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [loadError, setLoadError] = useState("");
+
+	useEffect(() => {
+		let active = true;
+		getUsers()
+			.then((response: User[]) => {
+				if (!active) return;
+				setUsers(response.map(toUserRecord));
+			})
+			.catch(() => {
+				if (active) setLoadError("Не вдалося завантажити користувачів. Спробуйте оновити сторінку.");
+			})
+			.finally(() => {
+				if (active) setLoading(false);
+			});
+		return () => { active = false; };
+	}, []);
 	const [search, setSearch] = useState("");
 	const [status, setStatus] = useState("Усі");
 	const [vehicleCount, setVehicleCount] = useState("Усі");
@@ -135,6 +152,20 @@ export function UsersPage() {
 				user.id === id ? { ...user, status: nextStatus } : user
 			)
 		);
+
+	function toUserRecord(user: User): UserRecord {
+		const name = user.email.split("@")[0].replace(/[._-]+/g, " ");
+		return {
+			id: user.id,
+			name,
+			email: user.email,
+			phone: "—",
+			vehicles: 0,
+			status: user.emailVerified ? "Активний" : "На перевірці",
+			lastEvent: user.emailVerified ? "Email підтверджено" : "Очікує підтвердження email",
+			initials: name.split(" ").map((part) => part[0] ?? "").join("").slice(0, 2).toLocaleUpperCase("uk"),
+		};
+	}
 
 	return (
 		<Stack
@@ -217,6 +248,8 @@ export function UsersPage() {
 			</Stack>
 
 			<Card>
+				{loadError && <Alert severity="error" sx={{ m: 2 }}>{loadError}</Alert>}
+				{loading && <Typography role="status" sx={{ p: 2 }}>Завантаження користувачів…</Typography>}
 				<Box
 					sx={{
 						p: 2,

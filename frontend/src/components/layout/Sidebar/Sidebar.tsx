@@ -7,15 +7,43 @@ import {
 	Stack,
 	Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { NavItem } from "./NavItem";
 import { NavItemProps } from "../../../interfaces";
 import { SIDEBAR_NAV } from "../../../navigation/navConfig";
 import HubIcon from "@mui/icons-material/Hub";
+import { Login, Logout } from "@mui/icons-material";
+import { useAuth } from "../../../pages/auth/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { signOut } from "../../../api";
 
 const DRAWER_WIDTH = 260;
 
 export const Sidebar = () => {
+	const { status, clearAuth } = useAuth();
+	const navigate = useNavigate();
+	const [logoutError, setLogoutError] = useState("");
+	const isAuthenticated = status === "authenticated";
+
+	async function handleLogout() {
+		setLogoutError("");
+		try {
+			const result = await signOut();
+			if (!result.ok) {
+				throw new Error("Logout failed");
+			}
+
+			clearAuth();
+			await navigate("/login", { replace: true });
+		} catch {
+			setLogoutError("Logout failed. Try again.");
+		}
+	}
+
+	const authItem = isAuthenticated
+		? { title: "Logout", path: "#", icon: Logout, onClick: handleLogout }
+		: { title: "Login", path: "/login", icon: Login };
+
 	return (
 		<Drawer
 			variant="permanent"
@@ -55,42 +83,60 @@ export const Sidebar = () => {
 
 			{/* 2. Navigation Section */}
 			<Box sx={{ flexGrow: 1, overflowY: "auto", py: 1 }}>
-				{SIDEBAR_NAV.map((group) => (
-					<List
-						key={group.subheader}
-						subheader={
-							<ListSubheader
-								disableSticky
-								sx={{
-									bgcolor: "transparent",
-									color: "text.disabled",
-									fontSize: "0.7rem",
-									fontWeight: 700,
-									letterSpacing: "0.08em",
-									lineHeight: "32px",
-									px: 3,
-								}}
-							>
-								{group.subheader}
-							</ListSubheader>
-						}
-					>
-						{group.items.map((item: NavItemProps["item"]) => (
-							<NavItem
-								key={item.path}
-								item={item}
-							/>
-						))}
-					</List>
-				))}
+				{SIDEBAR_NAV.map((group) => {
+					const items =
+						group.subheader === "FAST ACTIONS"
+							? [...group.items, authItem]
+							: group.items;
+					return (
+						<List
+							key={group.subheader}
+							subheader={
+								<ListSubheader
+									disableSticky
+									sx={{
+										bgcolor: "transparent",
+										color: "text.disabled",
+										fontSize: "0.7rem",
+										fontWeight: 700,
+										letterSpacing: "0.08em",
+										lineHeight: "32px",
+										px: 3,
+									}}
+								>
+									{group.subheader}
+								</ListSubheader>
+							}
+						>
+							{items.map((item: NavItemProps["item"]) => (
+								<NavItem
+									key={item.path}
+									item={item}
+								/>
+							))}
+						</List>
+					);
+				})}
 			</Box>
 
 			<Divider />
 
 			{/* 3. Footer Section */}
 			<Box sx={{ p: 2 }}>
-				<Stack direction="row" spacing={1.25} sx={{ alignItems: "center" }}>
-					<Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "success.main", boxShadow: "0 0 10px rgba(16,185,129,.6)" }} />
+				<Stack
+					direction="row"
+					spacing={1.25}
+					sx={{ alignItems: "center" }}
+				>
+					<Box
+						sx={{
+							width: 8,
+							height: 8,
+							borderRadius: "50%",
+							bgcolor: "success.main",
+							boxShadow: "0 0 10px rgba(16,185,129,.6)",
+						}}
+					/>
 					<Typography variant="caption">RabbitMQ: Підключено</Typography>
 				</Stack>
 			</Box>

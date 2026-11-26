@@ -2,33 +2,31 @@ import { NavGroupConfig } from "../interfaces";
 import {
 	AddCircleOutlined,
 	DirectionsCarOutlined,
-	NotificationsNoneOutlined,
 	PeopleOutlined,
 	PersonAddOutlined,
 } from "@mui/icons-material";
 
 export const SIDEBAR_NAV: NavGroupConfig[] = [
 	{
-		subheader: "НАВІГАЦІЯ",
+		subheader: "NAVIGATION",
 		items: [
-			{ title: "Користувачі", path: "/users", icon: PeopleOutlined },
+			{ title: "Users", path: "/users", icon: PeopleOutlined },
 			{
-				title: "Транспортні засоби",
+				title: "Vehicles",
 				path: "/vehicles",
 				icon: DirectionsCarOutlined,
 			},
-
 		],
 	},
 	{
-		subheader: "ШВИДКІ ДІЇ",
+		subheader: "FAST ACTIONS",
 		items: [
 			{
-				title: "Додати користувача",
+				title: "Add User",
 				path: "/users/new",
 				icon: PersonAddOutlined,
 			},
-			{ title: "Додати ТЗ", path: "/vehicles/new", icon: AddCircleOutlined },
+			{ title: "Add Vehicle", path: "/vehicles/new", icon: AddCircleOutlined },
 		],
 	},
 ];

@@ -8,14 +8,17 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { vehicleServicePlatform } from "./theme/vehicleServicePlatform";
+import { AuthProvider } from "./pages/auth/AuthContext";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<BrowserRouter>
-			<ThemeProvider theme={vehicleServicePlatform}>
-				<CssBaseline />
-				<App />
-			</ThemeProvider>
+			<AuthProvider>
+				<ThemeProvider theme={vehicleServicePlatform}>
+					<CssBaseline />
+					<App />
+				</ThemeProvider>
+			</AuthProvider>
 		</BrowserRouter>
 	</StrictMode>
 );

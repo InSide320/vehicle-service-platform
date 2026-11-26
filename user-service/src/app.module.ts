@@ -34,6 +34,7 @@ import { join } from "node:path";
 				session: {
 					absoluteTtl: "14d", // signed out after 14 days, however active
 					idleTtl: "3d", // 3 days without a request
+					trustedOrigins: ["http://localhost:3000"],
 				},
 				emailVerification: { url: `${process.env.APP_URL}/auth/email/verify` },
 			}),

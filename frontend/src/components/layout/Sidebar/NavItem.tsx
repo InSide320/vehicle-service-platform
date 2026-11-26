@@ -23,6 +23,12 @@ export const NavItem = ({ item }: NavItemProps) => {
 				component={RouterLink}
 				to={item.path}
 				selected={isActive}
+				onClick={(event) => {
+					if (item.onClick) {
+						event.preventDefault();
+						void item.onClick();
+					}
+				}}
 				sx={{
 					"borderRadius": 1.5,
 					"py": 1,

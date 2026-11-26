@@ -2,9 +2,7 @@ import React from "react";
 import {
 	AppBar,
 	Avatar,
-	Badge,
 	Box,
-	IconButton,
 	InputAdornment,
 	Stack,
 	TextField,
@@ -12,10 +10,8 @@ import {
 	Typography,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "./Sidebar/Sidebar";
-// import { TopBar } from "./TopBar/TopBar";
 
 export const MainLayout = () => {
 	return (
@@ -56,14 +52,15 @@ export const MainLayout = () => {
 							}}
 						/>
 						<Box sx={{ flexGrow: 1 }} />
-						<IconButton aria-label="Сповіщення">
-							<Badge
-								badgeContent={3}
-								color="error"
-							>
-								<NotificationsNoneOutlinedIcon />
-							</Badge>
-						</IconButton>
+						{/*<IconButton aria-label="Сповіщення">*/}
+						{/*	<Badge*/}
+						{/*		badgeContent={3}*/}
+						{/*		color="error"*/}
+						{/*	>*/}
+						{/*		<NotificationsNoneOutlinedIcon />*/}
+						{/*	</Badge>*/}
+						{/*</IconButton>*/}
+						{/* LOGIN */}
 						<Stack
 							direction="row"
 							spacing={1}

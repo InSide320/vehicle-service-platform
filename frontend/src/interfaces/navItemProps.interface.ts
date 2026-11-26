@@ -6,6 +6,7 @@ export interface NavItemProps {
 		path: string;
 		icon: React.ElementType;
 		badge?: string | number;
+		onClick?: () => void | Promise<void>;
 	};
 }
 
@@ -14,6 +15,7 @@ export interface NavItemConfig {
 	path: string;
 	icon: React.ComponentType;
 	badge?: number;
+	onClick?: () => void | Promise<void>;
 }
 
 export interface NavGroupConfig {
